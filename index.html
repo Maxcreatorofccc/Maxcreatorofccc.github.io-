@@ -1,175 +1,1017 @@
 <!DOCTYPE html>
-<html lang="de">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaxCreator • Custom Commands</title>
 
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
+  <style>
+    :root{
+      --bg0:#050714;
+      --bg1:#0A1030;
 
-        nav {
-            margin: 10px 0;
-        }
+      --text:#ECF2FF;
+      --muted:rgba(236,242,255,0.72);
 
-        .btn {
-            background: black;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            margin: 0 10px;
-            border-radius: 5px;
-        }
+      --card:rgba(255,255,255,0.06);
+      --card2:rgba(255,255,255,0.09);
+      --stroke:rgba(255,255,255,0.12);
 
-        .status-bar {
-            background: #fff;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
+      --accent:#7C5CFF;
+      --accent2:#28D7FF;
+      --accent3:#2DD4BF;
 
-        .bar-container {
-            background: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+      --good:#2DD4BF;
+      --warn:#FBBF24;
+      --bad:#FB7185;
 
-        .bar {
-            height: 20px;
-            transition: width 0.5s ease; /* Animation hinzufügen */
-        }
+      --shadow: 0 18px 70px rgba(0,0,0,0.50);
+      --radius: 22px;
+    }
 
-        .bar.orange {
-            background: orange;
-        }
+    body.light{
+      --bg0:#F4F7FF;
+      --bg1:#FFFFFF;
 
-        .bar.yellow {
-            background: yellow;
-        }
+      --text:#0B1020;
+      --muted:rgba(11,16,32,0.68);
 
-        .event {
-            margin: 10px 0;
-            background: #fff;
-            padding: 10px;
-            border-radius: 5px;
-        }
+      --card:rgba(0,0,0,0.04);
+      --card2:rgba(0,0,0,0.06);
+      --stroke:rgba(0,0,0,0.10);
 
-        .theme-selector {
-            margin: 10px 0;
-        }
-    </style>
+      --shadow: 0 16px 50px rgba(0,0,0,0.14);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 800px at 14% 8%, rgba(124,92,255,0.36), transparent 56%),
+        radial-gradient(900px 700px at 86% 16%, rgba(40,215,255,0.26), transparent 56%),
+        radial-gradient(900px 700px at 52% 102%, rgba(45,212,191,0.18), transparent 56%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Subtle grid noise overlay */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:0.18;
+      background:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(600px 520px at 50% 8%, black 20%, transparent 65%);
+    }
+
+    /* Layout */
+    .wrap{
+      width:min(1120px, 92vw);
+      margin: 26px auto 90px;
+    }
+
+    /* Topbar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding: 16px 18px;
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position:sticky;
+      top:14px;
+      z-index:30;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 240px;
+    }
+
+    .logo{
+      width:42px; height:42px;
+      border-radius:14px;
+      background:
+        radial-gradient(16px 16px at 26% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0) 62%),
+        linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 16px 40px rgba(124,92,255,0.25);
+      border:1px solid rgba(255,255,255,0.18);
+      flex: 0 0 auto;
+    }
+
+    .brand h1{
+      font-size: 14px;
+      margin:0;
+      letter-spacing:0.2px;
+      line-height:1.2;
+      font-weight: 800;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size: 12px;
+      color:var(--muted);
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .chip{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding:10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-weight: 700;
+      font-size: 13px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.08); }
+    .chip.active{
+      background: linear-gradient(135deg, rgba(124,92,255,0.28), rgba(40,215,255,0.20));
+      border-color: rgba(124,92,255,0.35);
+    }
+
+    .right{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      min-width: 300px;
+    }
+
+    .pill{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      padding: 10px 12px;
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--good);
+      box-shadow: 0 0 0 6px rgba(45,212,191,0.14);
+    }
+
+    .iconbtn{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      display:grid;
+      place-items:center;
+      user-select:none;
+    }
+    .iconbtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.10); }
+    .iconbtn:active{ transform: translateY(0px) scale(0.98); }
+
+    /* Hero */
+    .hero{
+      margin-top: 16px;
+      display:grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .brand, .right{ min-width:auto; }
+      .topbar{ position:static; }
+      .pill{ display:none; }
+    }
+
+    .panel{
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* Shiny sweep */
+    .panel::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(500px 180px at 20% -10%, rgba(255,255,255,0.16), transparent 60%);
+      pointer-events:none;
+      opacity:0.65;
+    }
+
+    .heroTitle{
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing:-0.6px;
+      line-height:1.1;
+    }
+    .heroSub{
+      margin: 0;
+      color: var(--muted);
+      line-height:1.55;
+      font-size: 14px;
+      max-width: 62ch;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 520px){
+      .stats{ grid-template-columns: 1fr; }
+    }
+
+    .mini{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 12px 12px;
+    }
+    .mini .k{ font-size:12px; color:var(--muted); margin:0 0 6px; font-weight:650;}
+    .mini .v{ font-size:16px; font-weight: 900; margin:0; display:flex; align-items:center; gap:8px;}
+    .badge{
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .cardTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:0 0 10px;
+    }
+    .cardTitle h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:0.2px;
+      font-weight:900;
+    }
+    .cardTitle span{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* Grid */
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .col-8{ grid-column: span 8; }
+    .col-4{ grid-column: span 4; }
+    .col-6{ grid-column: span 6; }
+    .col-12{ grid-column: span 12; }
+    @media (max-width: 920px){
+      .col-8,.col-4,.col-6{ grid-column: span 12; }
+    }
+
+    /* Status */
+    .statusRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .statusPill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      min-width: 260px;
+    }
+    .statusPill strong{
+      font-size: 13px;
+      letter-spacing:0.2px;
+      font-weight: 950;
+    }
+    .statusPill em{
+      font-style: normal;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pulse{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--good);
+      box-shadow: 0 0 0 0 rgba(45,212,191,0.0);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgba(45,212,191,0.0); }
+      45%{ box-shadow: 0 0 0 9px rgba(45,212,191,0.12); }
+      100%{ box-shadow: 0 0 0 14px rgba(45,212,191,0.0); }
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+      border:1px solid var(--stroke);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      letter-spacing:0.1px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.10); }
+    .btn:active{ transform: translateY(0px) scale(0.985); }
+
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(124,92,255,0.95), rgba(40,215,255,0.75));
+      border-color: rgba(255,255,255,0.18);
+      color: #0B1020;
+    }
+
+    /* Social cards */
+    .socialGrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 920px){
+      .socialGrid{ grid-template-columns: 1fr; }
+    }
+
+    .social{
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      text-decoration:none;
+      color: var(--text);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .social::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(420px 140px at 18% -12%, rgba(124,92,255,0.22), transparent 60%);
+      pointer-events:none;
+      opacity:0.75;
+    }
+
+    .social:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(124,92,255,0.30);
+    }
+
+    .social small{ color:var(--muted); display:block; margin-top:2px; }
+
+    .tag{
+      font-size:12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      white-space:nowrap;
+      font-weight: 850;
+    }
+
+    /* Admin modal */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 50;
+      padding: 18px;
+    }
+
+    .modal{
+      width: min(560px, 92vw);
+      border-radius: 22px;
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      padding: 16px;
+      transform: translateY(6px);
+      animation: pop .16s ease-out forwards;
+    }
+    @keyframes pop{
+      from{ opacity:0; transform: translateY(10px) scale(0.985); }
+      to{ opacity:1; transform: translateY(0px) scale(1); }
+    }
+
+    .modalHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .modalHead h3{ margin:0; font-size: 15px; font-weight: 950; }
+    .modalHead p{ margin: 4px 0 0; color: var(--muted); font-size: 12.5px; line-height:1.45; }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 560px){
+      .row{ grid-template-columns: 1fr; }
+    }
+
+    .field{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    .field label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+
+    input[type="text"], input[type="password"]{
+      width:100%;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-weight: 850;
+      font-size: 14px;
+    }
+
+    input[type="color"]{
+      width:100%;
+      height:42px;
+      border:none;
+      background: transparent;
+      padding:0;
+      cursor:pointer;
+    }
+
+    .hint{
+      margin:10px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.45;
+    }
+
+    .modalActions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top: 12px;
+      flex-wrap:wrap;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      padding: 12px 14px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+      display:none;
+      z-index: 80;
+      font-weight: 900;
+      font-size: 13px;
+      max-width: 92vw;
+      text-align:center;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12.5px;
+      text-align:center;
+      opacity: 0.9;
+    }
+
+    /* Hide tabs */
+    .tab{ display:none; }
+    .tab.active{ display:block; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none !important; transition:none !important; }
+      body::before{ display:none; }
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>Willkommen auf der Hauptseite</h1>
-        <nav>
-            <a href="#status" class="btn">Status Seite</a>
-            <a href="#social" class="btn">Soziale Seite</a>
-            <a href="#events" class="btn">Events</a>
-            <a href="#feedback" class="btn">Feedback</a>
-        </nav>
-    </header>
+  <div class="wrap">
 
-    <main>
-        <section id="status">
-            <h2>Status Seite</h2>
-            <h3>Server Status</h3>
-            <div class="status-bar">
-                <div>Discord <span id="discord-status">Active</span></div>
-                <div class="bar-container">
-                    <div class="bar" style="width: 75%;" id="discord-progress"></div>
-                </div>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>MaxCreator</h1>
+          <p>Custom Commands • Panel</p>
+        </div>
+      </div>
+
+      <div class="nav" role="navigation" aria-label="Navigation">
+        <div class="chip active" id="tabBtn-home" onclick="showTab('home')">🏠 Home</div>
+        <div class="chip" id="tabBtn-social" onclick="showTab('social')">💼 Social</div>
+      </div>
+
+      <div class="right">
+        <div class="pill" title="Time + visitors (local)">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="clock">--:--:--</span>
+          <span style="opacity:.55">•</span>
+          <span id="visitorCount">Visitors: 0</span>
+        </div>
+        <button class="iconbtn" onclick="toggleTheme()" title="Light / dark mode">🌓</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="panel">
+        <h2 class="heroTitle">Clean, modern, and fast.</h2>
+        <p class="heroSub">
+          Show your server status, your links, and a tiny admin panel (not secure — you said that’s fine).
+          Everything is saved in <span class="badge">localStorage</span> on this device.
+        </p>
+
+        <div class="stats">
+          <div class="mini">
+            <p class="k">Current status</p>
+            <p class="v"><span id="statusLabel">Online</span> <span class="badge" id="statusBadge">OK</span></p>
+          </div>
+          <div class="mini">
+            <p class="k">Theme</p>
+            <p class="v"><span id="themeLabel">Dark</span> <span class="badge">UI</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="cardTitle">
+          <h2>Quick actions</h2>
+          <span>Admin + Reset</span>
+        </div>
+        <button class="btn primary" style="width:100%;" onclick="openAdmin()">🔐 Admin</button>
+        <div style="height:10px;"></div>
+        <button class="btn" style="width:100%;" onclick="resetLocal()">🧹 Reset local</button>
+        <p class="hint">
+          Reset removes local settings (visitors, theme, status) from this browser.
+        </p>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div id="home" class="tab active">
+      <div class="grid">
+        <div class="panel col-8">
+          <div class="cardTitle">
+            <h2>Server status</h2>
+            <span>Public display</span>
+          </div>
+
+          <div class="statusRow">
+            <div class="statusPill" id="statusPill">
+              <div class="pulse" id="statusPulse" aria-hidden="true"></div>
+              <div>
+                <strong id="serverStatusText">Online</strong><br/>
+                <em id="serverStatusSub">Everything is running smoothly.</em>
+              </div>
             </div>
-            <div class="status-bar">
-                <div>V3 Cmdr <span id="v3-status">Soon</span></div>
-                <div class="bar-container">
-                    <div class="bar orange" style="width: 50%;" id="v3-progress"></div>
-                </div>
-            </div>
-            <div class="status-bar">
-                <div>Beta Cmdr <span id="beta-status">Soon</span></div>
-                <div class="bar-container">
-                    <div class="bar yellow" style="width: 25%;" id="beta-progress"></div>
-                </div>
-            </div>
-            <h3>Admin Panel</h3>
-            <div>
-                <label for="discord-percentage">Discord %:</label>
-                <input type="number" id="discord-percentage" value="75" min="0" max="100">
-                <button onclick="updateStatus()">Update</button>
-            </div>
-            <div class="theme-selector">
-                <label for="theme">Wähle ein Thema:</label>
-                <select id="theme" onchange="changeTheme()">
-                    <option value="default">Standard</option>
-                    <option value="dark">Dunkel</option>
-                </select>
-            </div>
-        </section>
 
-        <section id="social">
-            <h2>Folge uns auf:</h2>
-            <a href="https://discord.com" class="btn">Discord</a>
-            <a href="https://youtube.com" class="btn">YouTube</a>
-            <a href="https://tiktok.com" class="btn">TikTok</a>
-        </section>
+            <button class="btn" onclick="cycleStatus()">🔁 Quick switch</button>
+          </div>
+        </div>
 
-        <section id="events">
-            <h2>Anstehende Events</h2>
-            <div class="event">Event 1: Online-Meeting am 15. März 2026</div>
-            <div class="event">Event 2: Server-Wartung am 20. März 2026</div>
-        </section>
+        <div class="panel col-4">
+          <div class="cardTitle">
+            <h2>Notes</h2>
+            <span>Local</span>
+          </div>
+          <p class="hint" style="margin:0;">
+            • Visitors = local counter (per browser)<br/>
+            • Admin = password in the code (not secure)<br/>
+            • Status and theme are saved in localStorage
+          </p>
+        </div>
+      </div>
+    </div>
 
-        <section id="feedback">
-            <h2>Feedback</h2>
-            <form onsubmit="submitFeedback(event)">
-                <label for="feedback-message">Deine Nachricht:</label>
+    <!-- SOCIAL -->
+    <div id="social" class="tab">
+      <div class="grid">
+        <div class="panel col-12">
+          <div class="cardTitle">
+            <h2>Social / business</h2>
+            <span>put your real links</span>
+          </div>
 
-                <textarea id="feedback-message" rows="4" required></textarea>
+          <div class="socialGrid">
+            <a class="social" href="#" id="linkDiscord" target="_blank" rel="noopener">
+              <div>
+                <strong>Discord</strong>
+                <small>Server / contact</small>
+              </div>
+              <span class="tag">Join</span>
+            </a>
 
-                <button type="submit">Absenden</button>
-            </form>
-        </section>
-    </main>
+            <a class="social" href="#" id="linkTikTok" target="_blank" rel="noopener">
+              <div>
+                <strong>TikTok</strong>
+                <small>Shorts & content</small>
+              </div>
+              <span class="tag">Follow</span>
+            </a>
 
-    <script>
-        function updateStatus() {
-            const discordPercentage = document.getElementById('discord-percentage').value;
-            document.getElementById('discord-progress').style.width = discordPercentage + '%';
-            const discordStatus = discordPercentage < 100 ? 'Active' : 'Online';
-            document.getElementById('discord-status').innerText = discordStatus;
-        }
+            <a class="social" href="#" id="linkYouTube" target="_blank" rel="noopener">
+              <div>
+                <strong>YouTube</strong>
+                <small>Channel & videos</small>
+              </div>
+              <span class="tag">Subscribe</span>
+            </a>
+          </div>
 
-        function changeTheme() {
-            const theme = document.getElementById('theme').value;
-            if (theme === 'dark') {
-                document.body.style.backgroundColor = '#333';
-                document.body.style.color = '#fff';
-            } else {
-                document.body.style.backgroundColor = '#f4f4f4';
-                document.body.style.color = '#333';
-            }
-        }
+          <p class="hint">
+            Tip: if you want, I can also add link editing inside the admin panel.
+          </p>
+        </div>
+      </div>
+    </div>
 
-        function submitFeedback(event) {
-            event.preventDefault(); // Verhindert das Standardverhalten des Formulars
-            const message = document.getElementById('feedback-message').value;
-            alert('Danke für dein Feedback: ' + message);
-            document.getElementById('feedback-message').value = ''; // Leere das Textfeld
-        }
-    </script>
+    <div class="footer">
+      © <span id="year"></span> • MaxCreator • GitHub Pages
+    </div>
+  </div>
+
+  <!-- ADMIN MODAL -->
+  <div class="backdrop" id="backdrop" onclick="closeAdmin(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Admin panel" onclick="event.stopPropagation()">
+      <div class="modalHead">
+        <div>
+          <h3>Admin panel</h3>
+          <p>
+            Yes, it’s not secure. That’s intentional.<br/>
+            It only customizes the status on this browser.
+          </p>
+        </div>
+        <button class="iconbtn" onclick="closeAdmin()" title="Close">✖️</button>
+      </div>
+
+      <div class="row" id="loginRow">
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="adminPass" placeholder="password" />
+        </div>
+        <div class="field">
+          <label>Action</label>
+          <button class="btn primary" style="width:100%;" onclick="login()">Log in</button>
+        </div>
+      </div>
+
+      <div id="adminRow" style="display:none;">
+        <div class="row">
+          <div class="field">
+            <label>Status text</label>
+            <input type="text" id="newServerStatus" placeholder="e.g. Maintenance" />
+          </div>
+          <div class="field">
+            <label>Color</label>
+            <input type="color" id="serverColor" value="#2DD4BF" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Sub text</label>
+            <input type="text" id="statusSub" placeholder="e.g. Back in 1 hour" />
+          </div>
+          <div class="field">
+            <label>Shortcut</label>
+            <button class="btn" style="width:100%;" onclick="logout()">Log out</button>
+          </div>
+        </div>
+
+        <div class="modalActions">
+          <button class="btn" onclick="applySavedStatus()">Cancel</button>
+          <button class="btn primary" onclick="updateServer()">Save</button>
+        </div>
+      </div>
+
+      <p class="hint">
+        Security note: anyone can view the password in your page source.
+      </p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">OK</div>
+
+  <script>
+    // ===========================
+    // Settings (NOT secure)
+    // ===========================
+    // The password is visible in the source code. You said that's fine.
+    const ADMIN_PASSWORD = "max";
+
+    // localStorage keys
+    const K_THEME = "mc_theme";
+    const K_VISITS = "mc_visits";
+    const K_STATUS_TEXT = "mc_status_text";
+    const K_STATUS_SUB = "mc_status_sub";
+    const K_STATUS_COLOR = "mc_status_color";
+
+    let isAdmin = false;
+
+    // ===========================
+    // Utilities
+    // ===========================
+    function $(id){ return document.getElementById(id); }
+
+    function showToast(message){
+      const t = $("toast");
+      t.textContent = message;
+      t.style.display = "block";
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => t.style.display = "none", 1600);
+    }
+
+    // ===========================
+    // Tabs
+    // ===========================
+    function showTab(tab){
+      ["home","social"].forEach(id => {
+        const el = $(id);
+        el.classList.toggle("active", id === tab);
+      });
+      ["home","social"].forEach(id => {
+        const btn = $("tabBtn-" + id);
+        btn.classList.toggle("active", id === tab);
+      });
+    }
+
+    // ===========================
+    // Theme
+    // ===========================
+    function applySavedTheme(){
+      const saved = localStorage.getItem(K_THEME) || "dark";
+      document.body.classList.toggle("light", saved === "light");
+      $("themeLabel").textContent = (saved === "light") ? "Light" : "Dark";
+    }
+
+    function toggleTheme(){
+      const isLight = document.body.classList.toggle("light");
+      localStorage.setItem(K_THEME, isLight ? "light" : "dark");
+      applySavedTheme();
+      showToast(isLight ? "Light mode" : "Dark mode");
+    }
+
+    // ===========================
+    // Clock
+    // ===========================
+    function updateClock(){
+      const now = new Date();
+      $("clock").textContent = now.toLocaleTimeString("en-US");
+    }
+
+    // ===========================
+    // Visits
+    // ===========================
+    function updateVisits(){
+      const current = Number(localStorage.getItem(K_VISITS) || "0") + 1;
+      localStorage.setItem(K_VISITS, String(current));
+      $("visitorCount").textContent = "Visitors: " + current;
+    }
+
+    // ===========================
+    // Status
+    // ===========================
+    function applySavedStatus(){
+      const text = localStorage.getItem(K_STATUS_TEXT) || "Online";
+      const sub  = localStorage.getItem(K_STATUS_SUB)  || "Everything is running smoothly.";
+      const color = localStorage.getItem(K_STATUS_COLOR) || "#2DD4BF";
+
+      $("serverStatusText").textContent = text;
+      $("serverStatusSub").textContent = sub;
+
+      // Color
+      $("statusPulse").style.background = color;
+
+      // Badge logic (simple keywords)
+      const badge = $("statusBadge");
+      const label = $("statusLabel");
+      label.textContent = text;
+
+      const t = text.toLowerCase();
+      if (t.includes("offline") || t.includes("down") || t.includes("error")){
+        badge.textContent = "DOWN";
+        badge.style.background = "rgba(251,113,133,0.18)";
+        badge.style.borderColor = "rgba(251,113,133,0.28)";
+      } else if (t.includes("maint") || t.includes("slow") || t.includes("warn")){
+        badge.textContent = "WARN";
+        badge.style.background = "rgba(251,191,36,0.18)";
+        badge.style.borderColor = "rgba(251,191,36,0.28)";
+      } else {
+        badge.textContent = "OK";
+        badge.style.background = "rgba(45,212,191,0.16)";
+        badge.style.borderColor = "rgba(45,212,191,0.26)";
+      }
+    }
+
+    function cycleStatus(){
+      const cur = (localStorage.getItem(K_STATUS_TEXT) || "Online").toLowerCase();
+
+      if (cur.includes("online")){
+        localStorage.setItem(K_STATUS_TEXT, "Maintenance");
+        localStorage.setItem(K_STATUS_SUB, "Back soon.");
+        localStorage.setItem(K_STATUS_COLOR, "#FBBF24");
+      } else if (cur.includes("maint")){
+        localStorage.setItem(K_STATUS_TEXT, "Offline");
+        localStorage.setItem(K_STATUS_SUB, "Issue in progress.");
+        localStorage.setItem(K_STATUS_COLOR, "#FB7185");
+      } else {
+        localStorage.setItem(K_STATUS_TEXT, "Online");
+        localStorage.setItem(K_STATUS_SUB, "Everything is running smoothly.");
+        localStorage.setItem(K_STATUS_COLOR, "#2DD4BF");
+      }
+
+      applySavedStatus();
+      showToast("Status updated");
+    }
+
+    // ===========================
+    // Admin
+    // ===========================
+    function openAdmin(){
+      $("backdrop").style.display = "flex";
+      $("loginRow").style.display = isAdmin ? "none" : "grid";
+      $("adminRow").style.display = isAdmin ? "block" : "none";
+
+      if(!isAdmin){
+        $("adminPass").value = "";
+        $("adminPass").focus();
+      } else {
+        // Pre-fill fields
+        $("newServerStatus").value = localStorage.getItem(K_STATUS_TEXT) || "Online";
+        $("statusSub").value = localStorage.getItem(K_STATUS_SUB) || "Everything is running smoothly.";
+        $("serverColor").value = localStorage.getItem(K_STATUS_COLOR) || "#2DD4BF";
+      }
+    }
+
+    function closeAdmin(){
+      $("backdrop").style.display = "none";
+    }
+
+    function closeAdminFromEsc(e){
+      if(e.key === "Escape" && $("backdrop").style.display === "flex"){
+        closeAdmin();
+      }
+    }
+
+    function login(){
+      const pass = $("adminPass").value;
+      if(pass === ADMIN_PASSWORD){
+        isAdmin = true;
+        $("loginRow").style.display = "none";
+        $("adminRow").style.display = "block";
+
+        // Pre-fill fields
+        $("newServerStatus").value = localStorage.getItem(K_STATUS_TEXT) || "Online";
+        $("statusSub").value = localStorage.getItem(K_STATUS_SUB) || "Everything is running smoothly.";
+        $("serverColor").value = localStorage.getItem(K_STATUS_COLOR) || "#2DD4BF";
+
+        showToast("Admin enabled");
+      } else {
+        showToast("Wrong password");
+      }
+    }
+
+    function logout(){
+      isAdmin = false;
+      $("adminRow").style.display = "none";
+      $("loginRow").style.display = "grid";
+      showToast("Logged out");
+    }
+
+    function updateServer(){
+      if(!isAdmin) return showToast("Admin only");
+
+      const text = $("newServerStatus").value.trim();
+      const sub  = $("statusSub").value.trim();
+      const color = $("serverColor").value;
+
+      if(!text) return showToast("Type a status text");
+
+      localStorage.setItem(K_STATUS_TEXT, text);
+      localStorage.setItem(K_STATUS_SUB, sub || "—");
+      localStorage.setItem(K_STATUS_COLOR, color || "#2DD4BF");
+
+      applySavedStatus();
+      showToast("Saved");
+      closeAdmin();
+    }
+
+    // ===========================
+    // Reset
+    // ===========================
+    function resetLocal(){
+      localStorage.removeItem(K_THEME);
+      localStorage.removeItem(K_VISITS);
+      localStorage.removeItem(K_STATUS_TEXT);
+      localStorage.removeItem(K_STATUS_SUB);
+      localStorage.removeItem(K_STATUS_COLOR);
+
+      applySavedTheme();
+      applySavedStatus();
+      updateVisits();
+      showToast("Local reset done");
+    }
+
+    // ===========================
+    // Init
+    // ===========================
+    (function init(){
+      $("year").textContent = String(new Date().getFullYear());
+
+      applySavedTheme();
+      applySavedStatus();
+
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      updateVisits();
+
+      // Default links (replace these)
+      $("linkDiscord").href = "#";
+      $("linkTikTok").href = "#";
+      $("linkYouTube").href = "#";
+
+      // Close modal with ESC
+      window.addEventListener("keydown", closeAdminFromEsc);
+    })();
+  </script>
 </body>
-
 </html>
