@@ -4,21 +4,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Hauptseite</title>
+    <title>Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            margin: 10px 0;
+        }
+
+        .btn {
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin: 0 10px;
+            border-radius: 5px;
+        }
+
+        .status-bar {
+            background: #fff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .bar-container {
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 20px;
+            transition: width 0.5s ease; /* Animation hinzufügen */
+        }
+
+        .bar.orange {
+            background: orange;
+        }
+
+        .bar.yellow {
+            background: yellow;
+        }
+
+        .event {
+            margin: 10px 0;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .theme-selector {
+            margin: 10px 0;
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>Willkommen auf der Hauptseite</h1>
         <nav>
-            <a href="status.html" class="btn">Status Seite</a>
-            <a href="social.html" class="btn">Soziale Seite</a>
+            <a href="#status" class="btn">Status Seite</a>
+            <a href="#social" class="btn">Soziale Seite</a>
+            <a href="#events" class="btn">Events</a>
+            <a href="#feedback" class="btn">Feedback</a>
         </nav>
     </header>
+
     <main>
-        <p>Hier ist der Inhalt der Hauptseite.</p>
+        <section id="status">
+            <h2>Status Seite</h2>
+            <h3>Server Status</h3>
+            <div class="status-bar">
+                <div>Discord <span id="discord-status">Active</span></div>
+                <div class="bar-container">
+                    <div class="bar" style="width: 75%;" id="discord-progress"></div>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div>V3 Cmdr <span id="v3-status">Soon</span></div>
+                <div class="bar-container">
+                    <div class="bar orange" style="width: 50%;" id="v3-progress"></div>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div>Beta Cmdr <span id="beta-status">Soon</span></div>
+                <div class="bar-container">
+                    <div class="bar yellow" style="width: 25%;" id="beta-progress"></div>
+                </div>
+            </div>
+            <h3>Admin Panel</h3>
+            <div>
+                <label for="discord-percentage">Discord %:</label>
+                <input type="number" id="discord-percentage" value="75" min="0" max="100">
+                <button onclick="updateStatus()">Update</button>
+            </div>
+            <div class="theme-selector">
+                <label for="theme">Wähle ein Thema:</label>
+                <select id="theme" onchange="changeTheme()">
+                    <option value="default">Standard</option>
+                    <option value="dark">Dunkel</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="social">
+            <h2>Folge uns auf:</h2>
+            <a href="https://discord.com" class="btn">Discord</a>
+            <a href="https://youtube.com" class="btn">YouTube</a>
+            <a href="https://tiktok.com" class="btn">TikTok</a>
+        </section>
+
+        <section id="events">
+            <h2>Anstehende Events</h2>
+            <div class="event">Event 1: Online-Meeting am 15. März 2026</div>
+            <div class="event">Event 2: Server-Wartung am 20. März 2026</div>
+        </section>
+
+        <section id="feedback">
+            <h2>Feedback</h2>
+            <form onsubmit="submitFeedback(event)">
+                <label for="feedback-message">Deine Nachricht:</label>
+
+                <textarea id="feedback-message" rows="4" required></textarea>
+
+                <button type="submit">Absenden</button>
+            </form>
+        </section>
     </main>
+
+    <script>
+        function updateStatus() {
+            const discordPercentage = document.getElementById('discord-percentage').value;
+            document.getElementById('discord-progress').style.width = discordPercentage + '%';
+            const discordStatus = discordPercentage < 100 ? 'Active' : 'Online';
+            document.getElementById('discord-status').innerText = discordStatus;
+        }
+
+        function changeTheme() {
+            const theme = document.getElementById('theme').value;
+            if (theme === 'dark') {
+                document.body.style.backgroundColor = '#333';
+                document.body.style.color = '#fff';
+            } else {
+                document.body.style.backgroundColor = '#f4f4f4';
+                document.body.style.color = '#333';
+            }
+        }
+
+        function submitFeedback(event) {
+            event.preventDefault(); // Verhindert das Standardverhalten des Formulars
+            const message = document.getElementById('feedback-message').value;
+            alert('Danke für dein Feedback: ' + message);
+            document.getElementById('feedback-message').value = ''; // Leere das Textfeld
+        }
+    </script>
 </body>
 
 </html>
